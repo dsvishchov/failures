@@ -1,0 +1,15 @@
+name: failures_builder
+description: A code generator companion for failures
+version: 0.0.1
+repository: https://github.com/dsvishchov/failures
+issue_tracker: https://github.com/dsvishchov/failures/issues
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  analyzer: ^7.5.9
+  build: ">=3.0.0 <4.0.0"
+  failures: 0.0.1
+  meta: ^1.9.0
+  source_gen: ">=3.0.0 <4.0.0"

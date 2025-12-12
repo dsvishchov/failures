@@ -1,0 +1,12 @@
+name: failures
+description: Gracefully handle failures in your Dart/Flutter application
+version: 0.0.1
+repository: https://github.com/dsvishchov/failures
+issue_tracker: https://github.com/dsvishchov/failures/issues
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  equatable: ^2.0.0
+  meta: ^1.9.0

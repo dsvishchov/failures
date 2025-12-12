@@ -1,0 +1,22 @@
+name: failures_example
+description: An example of using failures package
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  failures: 0.0.1
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  failures_builder: 0.0.1
+  build_runner: any
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
