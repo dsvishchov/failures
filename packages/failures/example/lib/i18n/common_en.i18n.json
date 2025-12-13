@@ -1,0 +1,21 @@
+{
+  "failures": {
+    "generic": {
+      "title": "An unexpected error has occurred",
+      "message": "We have been notified and will do our best to resolve it as soon as possible"
+    },
+    "location": {
+      "placeNotFound": {
+        "title": "No place found",
+        "message": "We were unable to find any place given selected location"
+      },
+      "locationUnavailable": {
+        "title": "Location unavailable",
+        "message": "We were unable to determine your current location"
+      }
+    }
+  },
+  "language": {
+    "change": "Change language"
+  }
+}

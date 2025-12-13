@@ -1,5 +1,5 @@
 library;
 
-export 'src/annotations/failure_enum_annotation.dart';
+export 'src/annotations/make_failure_annotation.dart';
 export 'src/types/failure.dart';
-export 'src/failure_descriptor.dart';
+export 'src/failures.dart';

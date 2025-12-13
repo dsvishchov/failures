@@ -4,6 +4,11 @@ class Failure<T> {
     this.stackTrace,
   });
 
-  final T? error;
+  final T error;
   final StackTrace? stackTrace;
+}
+
+mixin class FailureDescriptor<T extends Failure> {
+  String? title(T failure) => null;
+  String? message(T failure) => null;
 }
