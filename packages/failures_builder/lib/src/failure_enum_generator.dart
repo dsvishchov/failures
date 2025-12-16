@@ -10,53 +10,33 @@ class FailureEnumGenerator {
   final EnumElement2 definingEnum;
   final MakeFailure definingAnnotation;
 
-  String generate() => generateWithNamedConstructors();
-
-  String generateWithNamedConstructors() {
+  String generate() {
     String namedConstructors = '';
+    String getters = '';
 
-    enumValuesNames.forEach((enumValueName) {
+    enumValuesNames.forEach((name) {
+      final capitalizedName = '${name[0].toUpperCase()}${name.substring(1)}';
+
       namedConstructors += '''
-        const $className.$enumValueName() : this._($enumName.$enumValueName);
+        const $className.$name([StackTrace? stackTrace])
+          : this($enumName.$name, stackTrace);
+      ''';
+
+      getters += '''
+        bool get is$capitalizedName => error == $enumName.$name;
       ''';
     });
 
     return '''
       class $className extends Failure<$enumName> {
-        const $className._(super.error);
+        const $className(
+          super.error,
+          super.stackTrace,
+        );
 
         $namedConstructors
+        $getters
       }
-    ''';
-  }
-
-  String generateWithFactoryConstructors() {
-    String factoryConstructors = '';
-    String subclasses = '';
-
-    enumValuesNames.forEach((enumValueName) {
-      final capitalizedEnumValueName = '${enumValueName[0].toUpperCase()}${enumValueName.substring(1)}';
-      final subclassName = '$className$capitalizedEnumValueName';
-
-      factoryConstructors += '''
-        const factory $className.$enumValueName() = $subclassName;
-      ''';
-
-      subclasses += '''
-        final class $subclassName extends $className {
-          const $subclassName() : super($enumName.$enumValueName);
-        }
-      ''';
-    });
-
-    return '''
-      sealed class $className extends Failure<$enumName> {
-        const $className(super.error);
-
-        $factoryConstructors
-      }
-
-      $subclasses
     ''';
   }
 

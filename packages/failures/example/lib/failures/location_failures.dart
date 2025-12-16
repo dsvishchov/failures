@@ -10,17 +10,7 @@ enum LocationError {
   locationUnavailble,
 }
 
-final class LocationFailureDescriptor with FailureDescriptor<LocationFailure> {
-  @override
-  String? title(LocationFailure failure) {
-    return switch (failure.error) {
-      LocationError.placeNotFound
-        => t.common.failures.location.placeNotFound.title,
-      LocationError.locationUnavailble
-        => t.common.failures.location.locationUnavailable.title,
-    };
-  }
-
+final class LocationFailureDescriptor implements FailureDescriptor<LocationFailure> {
   @override
   String? message(LocationFailure failure) {
     return switch (failure.error) {
@@ -28,6 +18,16 @@ final class LocationFailureDescriptor with FailureDescriptor<LocationFailure> {
         => t.common.failures.location.placeNotFound.message,
       LocationError.locationUnavailble
         => t.common.failures.location.locationUnavailable.message,
+    };
+  }
+
+  @override
+  String? details(LocationFailure failure) {
+    return switch (failure.error) {
+      LocationError.placeNotFound
+        => t.common.failures.location.placeNotFound.details,
+      LocationError.locationUnavailble
+        => t.common.failures.location.locationUnavailable.details,
     };
   }
 }
