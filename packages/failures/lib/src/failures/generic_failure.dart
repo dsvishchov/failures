@@ -1,4 +1,4 @@
-import '/src/failures.dart';
+import 'failure.dart';
 
 class GenericFailure extends Failure<Object> {
   const GenericFailure(

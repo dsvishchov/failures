@@ -1,17 +1,36 @@
 import 'package:dio/dio.dart';
 
-import 'types/dio_failure.dart';
-import 'types/generic_failure.dart';
+import '/src/failures/dio_failure.dart';
+import '/src/failures/failure.dart';
+import '/src/failures/generic_failure.dart';
 
-/// Global instance to handle all failures
+/// Global singleton instance
 final failures = Failures.instance;
 
-/// Provides a way to register and handle all built-in and
-/// custom failures and their descriptors
+/// Provides a single place to register and handle failures.
+///
+/// Each [Failure] subclass handles a single type of errors and
+/// should provide a way to create them (typically through constructor
+/// tear-off) and describe using an instance of [FailureDescriptor].
+///
+/// Use [register] method to register new type of errors and their
+/// appropriate failure class and descriptor.
+///
+/// Use [Failure.fromError] to create a failure matching the type
+/// of the error provided in arguments. If no matching failure has
+/// been registered then a [GenericFailure] will be returned. Keep
+/// in mind that only direct type matching is supported, i.e if you
+/// use a subclass of a failure type registered it won't be matched.
+///
+/// Typically to handle all unhandled exceptions you might want to
+/// use [FlutterError.onError] and [PlatformDispatcher.instance.onError].
+/// Ref.: https://docs.flutter.dev/testing/errors
 class Failures {
+  /// Provides access to the singleton instance
   static final Failures instance = Failures._();
   factory Failures() => instance;
 
+  /// Default private constructor which registers built-in failures
   Failures._() {
     register<Object>(
       create: GenericFailure.new,
@@ -24,17 +43,19 @@ class Failures {
     );
   }
 
+  /// Register a new type of error and respective failure class
   void register<E>({
     required CreateFailure<E> create,
     required FailureDescriptor<Failure<E>> descriptor,
   }) {
-    _meta[E] = FailureMeta<E>(create, descriptor);
+    _meta[E] = _FailureMeta<E>(create, descriptor);
   }
 
+  /// Get descriptor for specific failure
   FailureDescriptor descriptorFor(Failure failure)
     => _metaFor(failure.error).descriptor;
 
-
+  /// Create a failure from the given error and its type
   Failure fromError(
     Object error,
     StackTrace? stackTrace,
@@ -50,8 +71,11 @@ class Failures {
     => _meta[error.runtimeType] ?? _meta[Object];
 }
 
-class FailureMeta<E> {
-  const FailureMeta(
+/// Failure creation function
+typedef CreateFailure<E> = Failure<E> Function(E error, StackTrace? stackTrace);
+
+class _FailureMeta<E> {
+  const _FailureMeta(
     this.create,
     this.descriptor,
   ): errorType = E;
@@ -59,40 +83,4 @@ class FailureMeta<E> {
   final CreateFailure<E> create;
   final FailureDescriptor<Failure<E>> descriptor;
   final Type errorType;
-}
-
-typedef CreateFailure<E> = Failure<E> Function(E error, StackTrace? stackTrace);
-
-/// Base class for all failures
-abstract class Failure<E> {
-  const Failure(
-    this.error,
-    this.stackTrace,
-  );
-
-  final E error;
-  final StackTrace? stackTrace;
-
-  static Failure fromError(
-    Object error,
-    StackTrace? stackTrace,
-  ) => failures.fromError(error, stackTrace);
-}
-
-/// Failure descriptor which allows to provide additional details
-/// about any specific failure which afterwards can be used to be
-/// logged into console, shown to the user etc.
-abstract class FailureDescriptor<F extends Failure> {
-  String? message(F failure);
-  String? details(F failure);
-}
-
-/// This extension provides a way to get `message` and `details`
-/// about any specific failure directly through its instance.
-extension FailureDescription on Failure {
-  String? get message
-    => failures.descriptorFor(this).message(this);
-
-  String? get details
-    => failures.descriptorFor(this).details(this);
 }
