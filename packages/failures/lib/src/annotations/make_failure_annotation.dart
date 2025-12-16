@@ -1,13 +1,14 @@
 import 'package:meta/meta_meta.dart';
 
-/// An annotation used to specify that `Failure` should be generated for this enum.
+/// An annotation used to specify that [Failure] subclass should be
+/// generated and annotated enum used as error type.
 @Target({TargetKind.enumType})
-class MakeFailure {
-  const MakeFailure({
+class FailureError {
+  const FailureError({
     this.name,
   });
 
   final String? name;
 }
 
-const makeFailure = MakeFailure();
+const failureError = FailureError();

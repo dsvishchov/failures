@@ -5,7 +5,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'failure_enum_generator.dart';
 
-class FailuresGenerator extends GeneratorForAnnotation<MakeFailure> {
+class FailuresGenerator extends GeneratorForAnnotation<FailureError> {
   @override
   String generateForAnnotatedElement(
     Element2 element,
@@ -24,22 +24,22 @@ class FailuresGenerator extends GeneratorForAnnotation<MakeFailure> {
     return generator.generate();
   }
 
-  MakeFailure _getAnnotation(Element2 element) {
+  FailureError _getAnnotation(Element2 element) {
     final annotation = const TypeChecker
-      .typeNamed(MakeFailure)
+      .typeNamed(FailureError)
       .firstAnnotationOf(element);
 
     final reader = ConstantReader(annotation);
     final name = reader.peek('name');
 
-    return MakeFailure(
+    return FailureError(
       name: name?.stringValue,
     );
   }
 
   void _throwInvalidTargetError(Element2 element) {
     throw InvalidGenerationSourceError(
-      '@MakeFailure can only be applied to enumeration.',
+      '@FailureError can only be applied to enumeration.',
       element: element,
     );
   }
