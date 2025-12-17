@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:failures/failures.dart';
 
 class FailureEnumGenerator {
@@ -7,7 +7,7 @@ class FailureEnumGenerator {
     required this.definingAnnotation,
   });
 
-  final EnumElement2 definingEnum;
+  final EnumElement definingEnum;
   final FailureError definingAnnotation;
 
   String generate() {
@@ -19,11 +19,11 @@ class FailureEnumGenerator {
 
       namedConstructors += '''
         $className.$name()
-          : this($enumName.$name);
+          : this(.$name);
       ''';
 
       getters += '''
-        bool get is$capitalizedName => error == $enumName.$name;
+        bool get is$capitalizedName => error == .$name;
       ''';
     });
 
@@ -41,10 +41,10 @@ class FailureEnumGenerator {
     ''';
   }
 
-  String get enumName => definingEnum.firstFragment.name2!;
+  String get enumName => definingEnum.firstFragment.name!;
 
   List<String> get enumValuesNames
-    => definingEnum.constants2.map((constant) => constant.firstFragment.name2!).toList();
+    => definingEnum.constants.map((constant) => constant.firstFragment.name!).toList();
 
   String get className {
     if (definingAnnotation.name != null) {

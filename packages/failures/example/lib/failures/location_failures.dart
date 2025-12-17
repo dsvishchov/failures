@@ -14,9 +14,9 @@ final class LocationFailureDescriptor implements FailureDescriptor<LocationFailu
   @override
   String? message(LocationFailure failure) {
     return switch (failure.error) {
-      LocationError.placeNotFound
+      .placeNotFound
         => t.common.failures.location.placeNotFound.message,
-      LocationError.locationUnavailble
+      .locationUnavailble
         => t.common.failures.location.locationUnavailable.message,
     };
   }
@@ -24,9 +24,9 @@ final class LocationFailureDescriptor implements FailureDescriptor<LocationFailu
   @override
   String? details(LocationFailure failure) {
     return switch (failure.error) {
-      LocationError.placeNotFound
+      .placeNotFound
         => t.common.failures.location.placeNotFound.details,
-      LocationError.locationUnavailble
+      .locationUnavailble
         => t.common.failures.location.locationUnavailable.details,
     };
   }

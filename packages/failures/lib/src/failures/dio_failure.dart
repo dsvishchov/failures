@@ -24,17 +24,17 @@ class DioFailure extends Failure<DioException> {
   final HttpStatusCode statusCode;
 
   bool get isTimeout {
-    return [
-      DioExceptionType.connectionTimeout,
-      DioExceptionType.sendTimeout,
-      DioExceptionType.receiveTimeout,
+    return <DioExceptionType>[
+      .connectionTimeout,
+      .sendTimeout,
+      .receiveTimeout,
     ].contains(error.type);
   }
 
-  bool get isBadResponse => error.type == DioExceptionType.badResponse;
+  bool get isBadResponse => error.type == .badResponse;
 
-  bool get isNotFound => statusCode == HttpStatusCode.notFound;
-  bool get isUnauthorised => statusCode == HttpStatusCode.unauthorized;
+  bool get isNotFound => statusCode == .notFound;
+  bool get isUnauthorised => statusCode == .unauthorized;
 
   static FailureExtra _httpDetails(
     RequestOptions request,
@@ -51,16 +51,16 @@ class DioFailure extends Failure<DioException> {
         : string;
     }
 
-    return {
-      DioFailureExtra.url: request.uri,
-      DioFailureExtra.method: request.method,
-      DioFailureExtra.queryParameters: request.queryParameters,
-      DioFailureExtra.requestHeaders: request.headers,
-      DioFailureExtra.requestData: _dataToString(request.data),
-      DioFailureExtra.statusCode: response?.statusCode,
-      DioFailureExtra.responseHeaders: response?.headers.map,
-      DioFailureExtra.responseData: _dataToString(response?.data),
-      DioFailureExtra.curl: request.curl,
+    return <DioFailureExtra, Object?>{
+      .url: request.uri,
+      .method: request.method,
+      .queryParameters: request.queryParameters,
+      .requestHeaders: request.headers,
+      .requestData: _dataToString(request.data),
+      .statusCode: response?.statusCode,
+      .responseHeaders: response?.headers.map,
+      .responseData: _dataToString(response?.data),
+      .curl: request.curl,
     };
   }
 }
