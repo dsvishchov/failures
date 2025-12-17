@@ -56,10 +56,10 @@ class DioFailure extends Failure<DioException> {
       .method: request.method,
       .queryParameters: request.queryParameters,
       .requestHeaders: request.headers,
-      .requestData: _dataToString(request.data),
-      .statusCode: response?.statusCode,
-      .responseHeaders: response?.headers.map,
-      .responseData: _dataToString(response?.data),
+      .requestData: ?_dataToString(request.data),
+      .statusCode: ?response?.statusCode,
+      .responseHeaders: ?response?.headers.map,
+      .responseData: ?_dataToString(response?.data),
       .curl: request.curl,
     };
   }
@@ -74,7 +74,10 @@ enum DioFailureExtra {
   statusCode,
   responseHeaders,
   responseData,
-  curl,
+  curl;
+
+  @override
+  String toString() => this.name;
 }
 
 class DioFailureDescriptor extends FailureDescriptor<DioFailure> {

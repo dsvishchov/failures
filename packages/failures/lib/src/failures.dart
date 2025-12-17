@@ -58,7 +58,7 @@ class Failures {
   /// Create a failure from the given error and its type
   Failure fromError(
     Object error, {
-    Map<Enum, dynamic>? extra,
+    FailureExtra? extra,
     StackTrace? stackTrace,
   }) {
     // If instance of Failure is thrown let's re-create it with

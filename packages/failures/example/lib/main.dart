@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
@@ -55,6 +54,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) => Scaffold(
           body: SafeArea(
@@ -76,107 +76,189 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget page(BuildContext context) {
-    return Container(
-      padding: EdgeInsetsGeometry.only(top: 12.0, left: 20.0, right: 20.0),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 12.0,
-        children: [
-          Text(
-            'Throw exception of type:',
-            style: TextStyle().copyWith(fontWeight: FontWeight.bold),
-          ),
-          Column(
-            children: [
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
-                alignment: WrapAlignment.center,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      throw 'This is an instance of String';
-                    },
-                    child: const Text('String'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      throw Exception('This is an instance of Exception');
-                    },
-                    child: const Text('Exception'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      dio.get('https://dart.dev1');
-                    },
-                    child: const Text('DioException'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      throw LocationError.locationUnavailble;
-                    },
-                    child: const Text('LocationError'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      throw LocationFailure.placeNotFound();
-                    },
-                    child: const Text('LocationFailure'),
-                  )
-                ],
-              )
-            ],
-          ),
-          const SizedBox(height: 4.0),
-          Expanded(
-            child: ValueListenableBuilder<Failure?>(
-              valueListenable: failureNotifier,
-              builder: (_, failure, __) => Column(
-                spacing: 8.0,
-                children: [
-                  if (failure?.message != null) ...[
-                    Text(
-                      failure!.message!,
-                      style: TextStyle().copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+    return  ValueListenableBuilder<Failure?>(
+      valueListenable: failureNotifier,
+      builder: (_, failure, __) => Container(
+        padding: EdgeInsetsGeometry.only(top: 12.0, left: 20.0, right: 20.0),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 12.0,
+          children: [
+            Text(
+              'Throw exception of type:',
+              style: TextStyle().copyWith(fontWeight: FontWeight.bold),
+            ),
+            Column(
+              children: [
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    _button(
+                      context,
+                      onPressed: () {
+                        throw 'This is an instance of String';
+                      },
+                      title: 'String',
+                    ),
+                    _button(
+                      context,
+                      onPressed: () {
+                        throw Exception('This is an instance of Exception');
+                      },
+                      title: 'Exception',
+                    ),
+                    _button(
+                      context,
+                      onPressed: () {
+                        dio.get('https://dart.dev1');
+                      },
+                      title: 'DioException',
+                    ),
+                    _button(
+                      context,
+                      onPressed: () {
+                        throw LocationError.locationUnavailble;
+                      },
+                      title: 'LocationError',
+                    ),
+                    _button(
+                      context,
+                      onPressed: () {
+                        throw LocationFailure.placeNotFound();
+                      },
+                      title: 'LocationFailure',
                     ),
                   ],
-                  if (failure?.details != null) ...[
-                    Text(
-                      failure!.details!,
-                      textAlign: TextAlign.center,
+                )
+              ],
+            ),
+            if (failure != null) ...[
+              Expanded(
+                child: DefaultTabController(
+                  length: 3,
+                  initialIndex: 0,
+                  child: Scaffold(
+                    appBar: AppBar(
+                      toolbarHeight: 0.0,
+                      bottom: const TabBar(
+                        tabs: [
+                          Tab(text: 'Descriptor'),
+                          Tab(text: 'Stack'),
+                          Tab(text: 'Extra'),
+                        ],
+                      ),
                     ),
-                  ],
-                  if (failure != null) ...[
-                    const SizedBox(height: 4.0),
-                    Row(
+                    body: TabBarView(
                       children: [
-                        FilledButton.tonal(
-                          onPressed: () {
-                            log(failure.stackTrace.toString());
-
-                            if (failure.extra != null) {
-                              log(failure.extra!.toString());
-                            }
-                          },
-                          child: const Text('Log Trace'),
-                        ),
+                        _descriptor(context, failure),
+                        _stackTrace(context, failure),
+                        _extra(context, failure),
                       ],
                     ),
-                    const SizedBox(height: 4.0),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(failure.stackTrace.original.toString())
-                      ),
-                    )
-                  ],
-                ],
-              )
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _descriptor(
+    BuildContext context,
+    Failure failure,
+  ) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(top: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8.0,
+        children: [
+          if (failure.message != null) ...[
+            _keyValue(
+              context,
+              key: 'message',
+              value: failure.message!,
             ),
-          ),
+          ],
+          if (failure.details != null) ...[
+            _keyValue(
+              context,
+              key: 'details',
+              value: failure.details!,
+            ),
+          ],
         ],
+      ),
+    );
+  }
+
+  Widget _stackTrace(
+    BuildContext context,
+    Failure failure,
+  ) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(top: 10.0),
+      child: Text(failure.stackTrace.original.toString())
+    );
+  }
+
+  Widget _extra(
+    BuildContext context,
+    Failure failure,
+  ) {
+    if (failure.extra != null) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.only(top: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8.0,
+          children: failure.extra!.entries.map((entry) {
+            return _keyValue(
+              context,
+              key: entry.key.toString(),
+              value: entry.value.toString(),
+            );
+          }).toList(),
+        )
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _keyValue(
+    BuildContext context, {
+    required String key,
+    required String value,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          key.toString(),
+          style: TextStyle().copyWith(fontWeight: FontWeight.bold),
+        ),
+        Text(value.toString()),
+      ],
+    );
+  }
+
+  Widget _button(
+    BuildContext context, {
+    required String title,
+    required VoidCallback? onPressed,
+  }) {
+    return SizedBox(
+      height: 36.0,
+      child: FilledButton(
+        onPressed: onPressed,
+        child: Text(title),
       ),
     );
   }
