@@ -1,14 +1,18 @@
+import 'package:stack_trace/stack_trace.dart';
+
 import '/src/failures.dart';
 
 /// Base class for all failures
 abstract class Failure<E> {
-  const Failure(
+  Failure(
     this.error,
-    this.stackTrace,
-  );
+    StackTrace? stackTrace,
+  ) : this.stackTrace = stackTrace != null
+    ? Trace.from(stackTrace)
+    : Trace.current();
 
   final E error;
-  final StackTrace? stackTrace;
+  final Trace stackTrace;
 
   static Failure fromError(
     Object error,

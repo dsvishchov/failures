@@ -18,7 +18,7 @@ class FailureEnumGenerator {
       final capitalizedName = '${name[0].toUpperCase()}${name.substring(1)}';
 
       namedConstructors += '''
-        const $className.$name([StackTrace? stackTrace])
+        $className.$name([StackTrace? stackTrace])
           : this($enumName.$name, stackTrace);
       ''';
 
@@ -29,7 +29,7 @@ class FailureEnumGenerator {
 
     return '''
       class $className extends Failure<$enumName> {
-        const $className(
+        $className(
           super.error,
           super.stackTrace,
         );

@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 class GenericFailure extends Failure<Object> {
-  const GenericFailure(
+  GenericFailure(
     super.error,
     super.stackTrace,
   );

@@ -60,9 +60,18 @@ class Failures {
     Object error,
     StackTrace? stackTrace,
   ) {
-    return (error is Failure)
-      ? error
-      : _metaFor(error).create(error, stackTrace);
+    // If instance of Failure is thrown let's re-create it with
+    // a stack trace provided instead of using the current one
+    if (error is Failure) {
+      final failure = error;
+      if (stackTrace == null) {
+        return failure;
+      } else {
+        error = failure.error;
+      }
+    }
+
+    return _metaFor(error).create(error, stackTrace);
   }
 
   final Map<Type, dynamic> _meta = {};

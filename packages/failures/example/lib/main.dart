@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
@@ -48,7 +49,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Builder(
         builder: (context) => Scaffold(
-          body: page(context),
+          body: SafeArea(
+            bottom: false,
+            child: page(context),
+          ),
           floatingActionButton: FloatingActionButton.small(
             onPressed: () async {
               await LocaleSettings.setLocaleRaw(
@@ -63,37 +67,19 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget? page(BuildContext context) {
+  Widget page(BuildContext context) {
     return Container(
-      padding: EdgeInsetsGeometry.all(20.0),
+      padding: EdgeInsetsGeometry.only(top: 12.0, left: 20.0, right: 20.0),
       alignment: Alignment.center,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 8.0,
+        spacing: 12.0,
         children: [
-          ValueListenableBuilder<Failure?>(
-            valueListenable: failureNotifier,
-            builder: (_, failure, __) => Column(
-              children: [
-                if (failure?.message != null) ...[
-                  Text(
-                    failure!.message!,
-                    style: TextStyle().copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-                if (failure?.details != null) ...[
-                  Text(
-                    failure!.details!,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ],
-            )
+          Text(
+            'Throw exception of type:',
+            style: TextStyle().copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16.0),
-          const Text('Throw exception of type:'),
           Column(
             children: [
               Wrap(
@@ -134,6 +120,49 @@ class _MyAppState extends State<MyApp> {
                 ],
               )
             ],
+          ),
+          const SizedBox(height: 4.0),
+          Expanded(
+            child: ValueListenableBuilder<Failure?>(
+              valueListenable: failureNotifier,
+              builder: (_, failure, __) => Column(
+                spacing: 8.0,
+                children: [
+                  if (failure?.message != null) ...[
+                    Text(
+                      failure!.message!,
+                      style: TextStyle().copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                  if (failure?.details != null) ...[
+                    Text(
+                      failure!.details!,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                  if (failure != null) ...[
+                    const SizedBox(height: 4.0),
+                    Row(
+                      children: [
+                        FilledButton.tonal(
+                          onPressed: () {
+                            log(failure.stackTrace.toString());
+                          },
+                          child: const Text('Log Trace'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4.0),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Text(failure.stackTrace.original.toString())
+                      ),
+                    )
+                  ],
+                ],
+              )
+            ),
           ),
         ],
       ),
