@@ -2,9 +2,10 @@ import 'failure.dart';
 
 class GenericFailure extends Failure<Object> {
   GenericFailure(
-    super.error,
+    super.error, {
+    super.extra,
     super.stackTrace,
-  );
+  });
 }
 
 class GenericFailureDescriptor extends FailureDescriptor<GenericFailure> {

@@ -57,9 +57,10 @@ class Failures {
 
   /// Create a failure from the given error and its type
   Failure fromError(
-    Object error,
+    Object error, {
+    Map<Enum, dynamic>? extra,
     StackTrace? stackTrace,
-  ) {
+  }) {
     // If instance of Failure is thrown let's re-create it with
     // a stack trace provided instead of using the current one
     if (error is Failure) {
@@ -71,7 +72,11 @@ class Failures {
       }
     }
 
-    return _metaFor(error).create(error, stackTrace);
+    return _metaFor(error).create(
+      error,
+      extra: extra,
+      stackTrace: stackTrace,
+    );
   }
 
   final Map<Type, dynamic> _meta = {};
@@ -81,13 +86,17 @@ class Failures {
 }
 
 /// Failure creation function
-typedef CreateFailure<E> = Failure<E> Function(E error, StackTrace? stackTrace);
+typedef CreateFailure<E> = Failure<E> Function(
+  E error, {
+  FailureExtra? extra,
+  StackTrace? stackTrace,
+});
 
 class _FailureMeta<E> {
   const _FailureMeta(
     this.create,
     this.descriptor,
-  ): errorType = E;
+  ) : errorType = E;
 
   final CreateFailure<E> create;
   final FailureDescriptor<Failure<E>> descriptor;

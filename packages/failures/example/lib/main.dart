@@ -22,13 +22,21 @@ void main() async {
 
   final flutterOnError = FlutterError.onError;
   FlutterError.onError = (details) {
-    failureNotifier.value = Failure.fromError(details.exception, details.stack);
+    failureNotifier.value = Failure.fromError(
+      details.exception,
+      stackTrace: details.stack,
+    );
+
     flutterOnError?.call(details);
   };
 
   final platformOnError = PlatformDispatcher.instance.onError;
   PlatformDispatcher.instance.onError = (error, stack) {
-    failureNotifier.value = Failure.fromError(error, stack);
+    failureNotifier.value = Failure.fromError(
+      error,
+      stackTrace: stack,
+    );
+
     platformOnError?.call(error, stack);
     return true;
   };
@@ -148,6 +156,10 @@ class _MyAppState extends State<MyApp> {
                         FilledButton.tonal(
                           onPressed: () {
                             log(failure.stackTrace.toString());
+
+                            if (failure.extra != null) {
+                              log(failure.extra!.toString());
+                            }
                           },
                           child: const Text('Log Trace'),
                         ),
