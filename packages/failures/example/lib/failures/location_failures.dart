@@ -4,7 +4,7 @@ import '/i18n/translations.g.dart';
 
 part 'location_failures.g.dart';
 
-@FailureError()
+@FailureError(type: .logic)
 enum LocationError {
   placeNotFound,
   locationUnavailble,

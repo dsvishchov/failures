@@ -1,5 +1,5 @@
 builders:
-  activity_bloc:
+  failures:
     import: "package:failures_builder/failures_builder.dart"
     builder_factories: ["failures"]
     build_extensions: { ".dart": ["failures.g.part"] }

@@ -16,6 +16,8 @@ abstract class Failure<E> {
   final FailureExtra? extra;
   final Trace stackTrace;
 
+  FailureType get type;
+
   static Failure fromError(
     Object error, {
     FailureExtra? extra,
@@ -31,6 +33,12 @@ abstract class Failure<E> {
 
 /// Type of extra data possible to add to any failure
 typedef FailureExtra = Map<Object, dynamic>;
+
+/// Failure types
+enum FailureType {
+  exception,
+  logic,
+}
 
 /// Failure descriptor which allows to provide additional details
 /// about any specific failure which afterwards can be used to be

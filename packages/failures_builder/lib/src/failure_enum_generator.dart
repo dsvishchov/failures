@@ -35,6 +35,9 @@ class FailureEnumGenerator {
           super.stackTrace,
         });
 
+        @override
+        FailureType get type => .${definingAnnotation.type.name};
+
         $namedConstructors
         $getters
       }

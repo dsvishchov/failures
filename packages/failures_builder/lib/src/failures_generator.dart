@@ -31,9 +31,14 @@ class FailuresGenerator extends GeneratorForAnnotation<FailureError> {
 
     final reader = ConstantReader(annotation);
     final name = reader.peek('name');
+    final type = reader.peek('type');
 
     return FailureError(
       name: name?.stringValue,
+      type: FailureType.values.firstWhere(
+        (value) => type?.objectValue.getField('_name')?.toStringValue() == value.toString().split('.')[1],
+        orElse: () => FailureType.exception,
+      ),
     );
   }
 

@@ -6,6 +6,9 @@ class GenericFailure extends Failure<Object> {
     super.extra,
     super.stackTrace,
   });
+
+  @override
+  FailureType get type => .exception;
 }
 
 class GenericFailureDescriptor extends FailureDescriptor<GenericFailure> {

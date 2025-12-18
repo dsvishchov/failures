@@ -21,6 +21,9 @@ class DioFailure extends Failure<DioException> {
         stackTrace: error.stackTrace
       );
 
+  @override
+  FailureType get type => .exception;
+
   final HttpStatusCode statusCode;
 
   bool get isTimeout {
