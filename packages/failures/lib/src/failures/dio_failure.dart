@@ -70,11 +70,14 @@ class DioFailure extends Failure<DioException> {
     return <DioFailureExtra, Object?>{
       .url: request.uri,
       .method: request.method,
-      .queryParameters: request.queryParameters,
-      .requestHeaders: request.headers,
+      if (request.queryParameters.isNotEmpty)
+        .queryParameters: request.queryParameters,
+      if (request.headers.isNotEmpty)
+        .requestHeaders: request.headers,
       .requestData: ?_dataToString(request.data),
       .statusCode: ?response?.statusCode,
-      .responseHeaders: ?response?.headers.map,
+      if ((response?.headers.map != null) && response!.headers.map.isNotEmpty)
+        .responseHeaders: response.headers.map,
       .responseData: ?_dataToString(response?.data),
       .curl: request.curl,
     };
