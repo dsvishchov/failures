@@ -38,6 +38,9 @@ class FailureEnumGenerator {
         @override
         FailureType get type => .${definingAnnotation.type.name};
 
+        @override
+        String toString() => '\$runtimeType (.\${error.name})';
+
         $namedConstructors
         $getters
       }

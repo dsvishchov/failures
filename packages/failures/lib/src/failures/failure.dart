@@ -18,6 +18,9 @@ abstract class Failure<E> {
 
   FailureType get type;
 
+  @override
+  String toString() => error.toString();
+
   static Failure fromError(
     Object error, {
     FailureExtra? extra,

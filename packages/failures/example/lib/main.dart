@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:failures/failures.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_logger/multi_logger.dart';
 
 import 'i18n/translations.g.dart';
 import 'failures/location_failures.dart';
@@ -14,6 +15,39 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocaleSettings.setLocaleRaw('en');
 
+  initLogging();
+  initFailures();
+
+  runApp(MyApp());
+}
+
+void initLogging() {
+  log = MultiLogger(
+    beforeLog: (event) {
+      if (event.message is Failure) {
+        final Failure failure = event.message;
+
+        return event.copyWith(
+          message: failure.message,
+          error: failure,
+          stackTrace: failure.stackTrace,
+          extra: failure.extra,
+        );
+      }
+      return event;
+    },
+    loggers: [
+      ConsoleLogger(
+        level: LogLevel.trace,
+      ),
+      SentryLogger(
+        level: LogLevel.error,
+      ),
+    ]
+  );
+}
+
+void initFailures() {
   failures.register<LocationError>(
     create: LocationFailure.new,
     descriptor: LocationFailureDescriptor(),
@@ -21,26 +55,28 @@ void main() async {
 
   final flutterOnError = FlutterError.onError;
   FlutterError.onError = (details) {
-    failureNotifier.value = Failure.fromError(
+    final failure = Failure.fromError(
       details.exception,
       stackTrace: details.stack,
     );
+    failureNotifier.value = failure;
+    log.error(failure);
 
     flutterOnError?.call(details);
   };
 
   final platformOnError = PlatformDispatcher.instance.onError;
   PlatformDispatcher.instance.onError = (error, stack) {
-    failureNotifier.value = Failure.fromError(
+    final failure = Failure.fromError(
       error,
       stackTrace: stack,
     );
+    failureNotifier.value = failure;
+    log.error(failure);
 
     platformOnError?.call(error, stack);
     return true;
   };
-
-  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -114,16 +150,16 @@ class _MyAppState extends State<MyApp> {
                     _button(
                       context,
                       onPressed: () {
-                        dio.get('https://dart.dev1');
+                        dio.get('https://www.production.stg.douleutaras.gr/api');
                       },
                       title: 'DioException',
                     ),
                     _button(
                       context,
                       onPressed: () {
-                        throw LocationError.locationUnavailble;
+                        [1, 2][3];
                       },
-                      title: 'LocationError',
+                      title: 'RangeError',
                     ),
                     _button(
                       context,

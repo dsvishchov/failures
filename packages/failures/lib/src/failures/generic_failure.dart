@@ -9,6 +9,9 @@ class GenericFailure extends Failure<Object> {
 
   @override
   FailureType get type => .exception;
+
+  @override
+  String toString() => '${runtimeType} (${error.runtimeType})';
 }
 
 class GenericFailureDescriptor extends FailureDescriptor<GenericFailure> {

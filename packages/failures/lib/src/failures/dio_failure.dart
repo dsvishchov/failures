@@ -17,12 +17,25 @@ class DioFailure extends Failure<DioException> {
           if (extra != null) ...extra,
           ..._httpDetails(error.requestOptions, error.response),
         },
-
-        stackTrace: error.stackTrace
+        stackTrace: error.stackTrace,
       );
 
   @override
   FailureType get type => .exception;
+
+  @override
+  String toString() {
+    final buffer = StringBuffer(
+      '${runtimeType} (.${error.type.name}, '
+    );
+
+    if (error.type == .badResponse) {
+      buffer.write('${statusCode.code}');
+    }
+
+    buffer.write(', ${error.requestOptions.uri.path})');
+    return buffer.toString();
+  }
 
   final HttpStatusCode statusCode;
 
