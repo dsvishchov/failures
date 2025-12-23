@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '/src/utils/dio/http_status_code.dart';
 import '/src/utils/dio/request_options_curl.dart';
+import '/src/utils/name_transform_utils.dart';
 
 import 'failure.dart';
 
@@ -96,7 +97,7 @@ enum DioFailureExtra {
   curl;
 
   @override
-  String toString() => this.name;
+  String toString() => camelToSentence(this.name);
 }
 
 class DioFailureDescriptor extends FailureDescriptor<DioFailure> {
