@@ -11,7 +11,8 @@ final failures = Failures.instance;
 ///
 /// Each [Failure] subclass handles a single type of errors and
 /// should provide a way to create them (typically through constructor
-/// tear-off) and describe using an instance of [FailureDescriptor].
+/// tear-off) and describe them both for technical purposes and
+/// for user facing UI.
 ///
 /// Use [register] method to register new type of errors and their
 /// appropriate failure class and descriptor.
@@ -32,27 +33,39 @@ class Failures {
 
   /// Default private constructor which registers built-in failures
   Failures._() {
-    register<Object>(
+    register<GenericFailure, Object>(
       create: GenericFailure.new,
-      descriptor: GenericFailureDescriptor(),
     );
 
-    register<DioException>(
+    register<DioFailure, DioException>(
       create: DioFailure.new,
-      descriptor: DioFailureDescriptor(),
     );
   }
 
   /// Register a new type of error and respective failure class
-  void register<E>({
+  void register<F extends Failure<E>, E>({
     required CreateFailure<E> create,
-    required FailureDescriptor<Failure<E>> descriptor,
+    FailureDescriptor<F>? descriptor,
   }) {
-    _meta[E] = _FailureMeta<E>(create, descriptor);
+    _meta[E] = _FailureMeta<F, E>(create, descriptor);
+  }
+
+  /// Register new descriptor for specific failure type
+  void registerDescriptor<F extends Failure>(
+    FailureDescriptor<F> descriptor,
+  ) {
+    final value = _meta.values.where(
+      (meta) => meta.failureType == F,
+    ).firstOrNull;
+
+    assert(value != null, 'Provided failure type is not registered yet');
+    if (value != null) {
+      _meta[value.errorType].descriptor = descriptor;
+    }
   }
 
   /// Get descriptor for specific failure
-  FailureDescriptor descriptorFor(Failure failure)
+  FailureDescriptor? descriptorFor(Failure failure)
     => _metaFor(failure.error).descriptor;
 
   /// Create a failure from the given error and its type
@@ -92,13 +105,15 @@ typedef CreateFailure<E> = Failure<E> Function(
   StackTrace? stackTrace,
 });
 
-class _FailureMeta<E> {
-  const _FailureMeta(
+class _FailureMeta<F extends Failure<E>, E> {
+  _FailureMeta(
     this.create,
     this.descriptor,
-  ) : errorType = E;
+  ) : failureType = F, errorType = E;
 
   final CreateFailure<E> create;
-  final FailureDescriptor<Failure<E>> descriptor;
+  FailureDescriptor<F>? descriptor;
+
   final Type errorType;
+  final Type failureType;
 }

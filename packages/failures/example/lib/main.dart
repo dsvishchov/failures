@@ -28,7 +28,7 @@ void initLogging() {
         final Failure failure = event.message;
 
         return event.copyWith(
-          message: failure.message,
+          message: failure.description,
           error: failure,
           stackTrace: failure.stackTrace,
           extra: failure.extra,
@@ -48,7 +48,7 @@ void initLogging() {
 }
 
 void initFailures() {
-  failures.register<LocationError>(
+  failures.register<LocationFailure, LocationError>(
     create: LocationFailure.new,
     descriptor: LocationFailureDescriptor(),
   );
@@ -150,7 +150,12 @@ class _MyAppState extends State<MyApp> {
                     _button(
                       context,
                       onPressed: () {
-                        dio.get('https://www.production.stg.douleutaras.gr/api');
+                        dio.get(
+                          'https://www.production.stg.douleutaras.gr/api',
+                          queryParameters: {
+                            'param1': 'value1',
+                          },
+                        );
                       },
                       title: 'DioException',
                     ),
@@ -182,7 +187,7 @@ class _MyAppState extends State<MyApp> {
                       toolbarHeight: 0.0,
                       bottom: const TabBar(
                         tabs: [
-                          Tab(text: 'Descriptor'),
+                          Tab(text: 'General'),
                           Tab(text: 'Stack'),
                           Tab(text: 'Extra'),
                         ],
@@ -215,6 +220,18 @@ class _MyAppState extends State<MyApp> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8.0,
         children: [
+          _keyValue(
+            context,
+            key: 'toString()',
+            value: failure.toString(),
+          ),
+          if (failure.description != null) ...[
+            _keyValue(
+              context,
+              key: 'description',
+              value: failure.description!,
+            ),
+          ],
           if (failure.message != null) ...[
             _keyValue(
               context,
@@ -250,7 +267,7 @@ class _MyAppState extends State<MyApp> {
   ) {
     if (failure.extra != null) {
       return SingleChildScrollView(
-        padding: EdgeInsets.only(top: 10.0),
+        padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8.0,
@@ -258,7 +275,7 @@ class _MyAppState extends State<MyApp> {
             return _keyValue(
               context,
               key: entry.key.toString(),
-              value: entry.value.toString(),
+              value: entry.value.toString().trim(),
             );
           }).toList(),
         )

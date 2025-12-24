@@ -12,12 +12,7 @@ class GenericFailure extends Failure<Object> {
 
   @override
   String toString() => '${runtimeType} (${error.runtimeType})';
-}
-
-class GenericFailureDescriptor extends FailureDescriptor<GenericFailure> {
-  @override
-  String? message(GenericFailure failure) => failure.error.toString();
 
   @override
-  String? details(GenericFailure failure) => null;
+  String? get description => error.toString();
 }

@@ -38,6 +38,9 @@ class DioFailure extends Failure<DioException> {
     return buffer.toString();
   }
 
+  @override
+  String? get description => error.message;
+
   final HttpStatusCode statusCode;
 
   bool get isTimeout {
@@ -71,14 +74,17 @@ class DioFailure extends Failure<DioException> {
     return <DioFailureExtra, Object?>{
       .url: request.uri,
       .method: request.method,
-      if (request.queryParameters.isNotEmpty)
+      if (request.queryParameters.isNotEmpty) ...{
         .queryParameters: request.queryParameters,
-      if (request.headers.isNotEmpty)
+      },
+      if (request.headers.isNotEmpty) ...{
         .requestHeaders: request.headers,
+      },
       .requestData: ?_dataToString(request.data),
       .statusCode: ?response?.statusCode,
-      if ((response?.headers.map != null) && response!.headers.map.isNotEmpty)
+      if ((response?.headers.map != null) && response!.headers.map.isNotEmpty) ...{
         .responseHeaders: response.headers.map,
+      },
       .responseData: ?_dataToString(response?.data),
       .curl: request.curl,
     };

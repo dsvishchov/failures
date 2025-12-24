@@ -12,15 +12,28 @@ abstract class Failure<E> {
     ? Trace.from(stackTrace)
     : Trace.current();
 
+  /// Actual error caused this failure
   final E error;
+
+  /// Extra information associated with the failure
   final FailureExtra? extra;
+
+  /// Stack trace to track down the source of the failure
   final Trace stackTrace;
 
+  /// Failure type allows to distinguish between exceptions
+  /// or just failures within business logic layer
   FailureType get type;
 
+  /// Short description of the failure
   @override
   String toString() => error.toString();
 
+  /// Detailed technical (not user-facing) description
+  String? get description => null;
+
+  /// Allows to create an instance of Failure based on the failure
+  /// types registered using [Failures], see [Failures.fromError]
   static Failure fromError(
     Object error, {
     FailureExtra? extra,
@@ -43,9 +56,9 @@ enum FailureType {
   logic,
 }
 
-/// Failure descriptor which allows to provide additional details
-/// about any specific failure which afterwards can be used to be
-/// logged into console, shown to the user etc.
+/// Failure descriptor allows providing user facing details
+/// about the failure which can be used to show some UI and
+/// explain what happened.
 abstract class FailureDescriptor<F extends Failure> {
   String? message(F failure);
   String? details(F failure);
@@ -55,8 +68,8 @@ abstract class FailureDescriptor<F extends Failure> {
 /// about any specific failure directly through its instance.
 extension FailureDescription on Failure {
   String? get message
-    => failures.descriptorFor(this).message(this);
+    => failures.descriptorFor(this)?.message(this);
 
   String? get details
-    => failures.descriptorFor(this).details(this);
+    => failures.descriptorFor(this)?.details(this);
 }
