@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   multi_logger: ^0.0.1
-  sentry: ^8.14.2
+  sentry_flutter: ^8.14.2
   slang: ^4.7.0
   slang_flutter: ^4.7.0
 

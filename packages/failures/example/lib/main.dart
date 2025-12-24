@@ -2,8 +2,12 @@ import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:failures/failures.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_logger/multi_logger.dart';
+import 'package:sentry_flutter/sentry_flutter.dart' hide SentryLogger;
+// ignore: implementation_imports
+import 'package:sentry_flutter/src/integrations/flutter_error_integration.dart';
 
 import 'i18n/translations.g.dart';
 import 'failures/location_failures.dart';
@@ -12,13 +16,41 @@ final dio = Dio();
 final failureNotifier = ValueNotifier<Failure?>(null);
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await LocaleSettings.setLocaleRaw('en');
-
   initLogging();
   initFailures();
 
-  runApp(MyApp());
+  SentryWidgetsFlutterBinding.ensureInitialized();
+
+  await LocaleSettings.setLocaleRaw('en');
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://47fd742d23ef449e8b5dc0064c272d00@o72377.ingest.sentry.io/4504173096730624';
+      options.debug = false;
+      options.enableAppHangTracking = !kDebugMode;
+
+      final onPlatformError = options
+        .integrations
+        .whereType<OnErrorIntegration>()
+        .firstOrNull;
+
+      final onFlutterError = options
+        .integrations
+        .whereType<FlutterErrorIntegration>()
+        .firstOrNull;
+
+      if (onPlatformError != null) {
+        options.removeIntegration(onPlatformError);
+      }
+      if (onFlutterError != null) {
+        options.removeIntegration(onFlutterError);
+      }
+    },
+
+    appRunner: () {
+      return runApp(MyApp());
+    },
+  );
 }
 
 void initLogging() {
@@ -45,15 +77,7 @@ void initLogging() {
       ),
     ]
   );
-}
 
-void initFailures() {
-  failures.register<LocationFailure, LocationError>(
-    create: LocationFailure.new,
-    descriptor: LocationFailureDescriptor(),
-  );
-
-  final flutterOnError = FlutterError.onError;
   FlutterError.onError = (details) {
     final failure = Failure.fromError(
       details.exception,
@@ -61,11 +85,8 @@ void initFailures() {
     );
     failureNotifier.value = failure;
     log.error(failure);
-
-    flutterOnError?.call(details);
   };
 
-  final platformOnError = PlatformDispatcher.instance.onError;
   PlatformDispatcher.instance.onError = (error, stack) {
     final failure = Failure.fromError(
       error,
@@ -74,9 +95,15 @@ void initFailures() {
     failureNotifier.value = failure;
     log.error(failure);
 
-    platformOnError?.call(error, stack);
     return true;
   };
+}
+
+void initFailures() {
+  failures.register<LocationFailure, LocationError>(
+    create: LocationFailure.new,
+    descriptor: LocationFailureDescriptor(),
+  );
 }
 
 class MyApp extends StatefulWidget {

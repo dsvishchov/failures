@@ -18,6 +18,6 @@ extension RequestOptionsCurl on RequestOptions {
 
     components.add('"${uri.toString()}"');
 
-    return components.join(' ');
+    return components.join(' \\\n  ');
   }
 }

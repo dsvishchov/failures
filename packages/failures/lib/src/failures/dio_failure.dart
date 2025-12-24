@@ -39,7 +39,7 @@ class DioFailure extends Failure<DioException> {
   }
 
   @override
-  String? get description => error.message;
+  String? get description => null;
 
   final HttpStatusCode statusCode;
 
