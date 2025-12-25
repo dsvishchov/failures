@@ -28,34 +28,32 @@ class Failures {
   static final Failures instance = Failures._();
   factory Failures() => instance;
 
-  /// Default private constructor
-  Failures._();
-
   /// Register a new type of error and respective failure class
   void register<F extends Failure<E>, E>({
     required CreateFailure<E> create,
     FailureDescriptor<F>? descriptor,
   }) {
-    _meta[E] = _FailureMeta<F, E>(create, descriptor);
+    assert(_meta[F] == null, 'This failure is already registered');
+    _meta[F] = _FailureMeta<F, E>(create, descriptor);
   }
 
   /// Register new descriptor for specific failure type
   void registerDescriptor<F extends Failure>(
     FailureDescriptor<F> descriptor,
   ) {
-    final value = _meta.values.where(
-      (meta) => meta.failureType == F,
-    ).firstOrNull;
+    assert(_meta[F] != null, 'Provided failure type is not registered yet');
+    _meta[F].descriptor = descriptor;
+  }
 
-    assert(value != null, 'Provided failure type is not registered yet');
-    if (value != null) {
-      _meta[value.errorType].descriptor = descriptor;
-    }
+  /// Reset by removing all registered failure types
+  void reset() {
+    _meta.clear();
   }
 
   /// Get descriptor for specific failure
-  FailureDescriptor? descriptorFor(Failure failure)
-    => _metaFor(failure.error).descriptor;
+  FailureDescriptor? descriptorFor(Failure failure) {
+    return _meta[failure.runtimeType].descriptor;
+  }
 
   /// Create a failure from the given error and its type
   Failure fromError(
@@ -63,7 +61,7 @@ class Failures {
     FailureExtra? extra,
     StackTrace? stackTrace,
   }) {
-    // If instance of Failure is thrown let's re-create it with
+    // If an instance of Failure is thrown let's re-create it with
     // a stack trace provided instead of using the current one
     if (error is Failure) {
       final failure = error;
@@ -74,7 +72,16 @@ class Failures {
       }
     }
 
-    return _metaFor(error).create(
+    final meta = _meta.values.firstWhere(
+      (value) => value.errorType == error.runtimeType,
+      orElse: () => _meta[Object],
+    );
+
+    final create = meta != null
+      ? meta.create
+      : GenericFailure.new;
+
+    return create(
       error,
       extra: extra,
       stackTrace: stackTrace,
@@ -86,13 +93,12 @@ class Failures {
     failures.onFailure?.call(failure);
   }
 
-  /// Callback to be triggered after each failure creation
+  /// Callback to be triggered to handled
   void Function(Failure failure)? onFailure;
 
-  final Map<Type, dynamic> _meta = {};
+  Failures._();
 
-  dynamic _metaFor(Object error)
-    => _meta[error.runtimeType] ?? _meta[Object];
+  final Map<Type, dynamic> _meta = {};
 }
 
 /// Failure creation function
@@ -106,11 +112,11 @@ class _FailureMeta<F extends Failure<E>, E> {
   _FailureMeta(
     this.create,
     this.descriptor,
-  ) : failureType = F, errorType = E;
+  );
 
   final CreateFailure<E> create;
   FailureDescriptor<F>? descriptor;
 
-  final Type errorType;
-  final Type failureType;
+  Type get failureType => F;
+  Type get errorType => E;
 }

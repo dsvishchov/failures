@@ -29,6 +29,9 @@ void main() async {
       options.debug = false;
       options.enableAppHangTracking = !kDebugMode;
 
+      // Remove default Sentry integrations for handling platform
+      // and Flutter errors. We'll handle them on our own, but still
+      // will track them to Sentry, just with more information added
       final onPlatformError = options
         .integrations
         .whereType<OnErrorIntegration>()
@@ -56,6 +59,9 @@ void main() async {
 void initLogging() {
   logger = MultiLogger(
     beforeLog: (event) {
+      // If log called with [Failure] as a message let's make
+      // the failure itself an error of [LogEvent] and use the
+      // failure description as a message instead
       if (event.message is Failure) {
         final Failure failure = event.message;
 
@@ -77,33 +83,51 @@ void initLogging() {
       ),
     ]
   );
-
-  FlutterError.onError = (details) {
-    final failure = Failure.fromError(
-      details.exception,
-      stackTrace: details.stack,
-    );
-    failureNotifier.value = failure;
-    logger.error(failure);
-  };
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    final failure = Failure.fromError(
-      error,
-      stackTrace: stack,
-    );
-    failureNotifier.value = failure;
-    logger.error(failure);
-
-    return true;
-  };
 }
 
 void initFailures() {
+  // Register all types of failures and their descriptors
+  failures.register<GenericFailure, Object>(
+    create: GenericFailure.new,
+  );
+
+  failures.register<DioFailure, DioException>(
+    create: DioFailure.new,
+  );
+
   failures.register<LocationFailure, LocationError>(
     create: LocationFailure.new,
     descriptor: LocationFailureDescriptor(),
   );
+
+  void onFailure(failure) {
+    failureNotifier.value = failure;
+    logger.error(failure);
+  }
+
+  failures.onFailure = onFailure;
+
+  // Here we catch both types of errors: Flutter errors and Platform errors.
+  // (ref: https://docs.flutter.dev/testing/errors)
+  FlutterError.onError = (details) {
+    onFailure(
+      Failure.fromError(
+        details.exception,
+        stackTrace: details.stack,
+      ),
+    );
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    onFailure(
+      Failure.fromError(
+        error,
+        stackTrace: stack,
+      ),
+    );
+
+    return true;
+  };
 }
 
 class MyApp extends StatefulWidget {
