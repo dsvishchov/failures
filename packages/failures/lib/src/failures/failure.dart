@@ -23,7 +23,7 @@ abstract class Failure<E> {
 
   /// Failure type allows to distinguish between exceptions
   /// or just failures within business logic layer
-  FailureType get type;
+  FailureType get type => .exception;
 
   /// Short description of the failure
   @override

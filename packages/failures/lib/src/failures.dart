@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-
-import '/src/failures/dio_failure.dart';
 import '/src/failures/failure.dart';
 import '/src/failures/generic_failure.dart';
 
@@ -31,16 +28,8 @@ class Failures {
   static final Failures instance = Failures._();
   factory Failures() => instance;
 
-  /// Default private constructor which registers built-in failures
-  Failures._() {
-    register<GenericFailure, Object>(
-      create: GenericFailure.new,
-    );
-
-    register<DioFailure, DioException>(
-      create: DioFailure.new,
-    );
-  }
+  /// Default private constructor
+  Failures._();
 
   /// Register a new type of error and respective failure class
   void register<F extends Failure<E>, E>({
@@ -91,6 +80,14 @@ class Failures {
       stackTrace: stackTrace,
     );
   }
+
+  /// Handle a failure by calling a callback when provided
+  void handle(Failure failure) {
+    failures.onFailure?.call(failure);
+  }
+
+  /// Callback to be triggered after each failure creation
+  void Function(Failure failure)? onFailure;
 
   final Map<Type, dynamic> _meta = {};
 

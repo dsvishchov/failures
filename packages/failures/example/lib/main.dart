@@ -54,7 +54,7 @@ void main() async {
 }
 
 void initLogging() {
-  log = MultiLogger(
+  logger = MultiLogger(
     beforeLog: (event) {
       if (event.message is Failure) {
         final Failure failure = event.message;
@@ -84,7 +84,7 @@ void initLogging() {
       stackTrace: details.stack,
     );
     failureNotifier.value = failure;
-    log.error(failure);
+    logger.error(failure);
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -93,7 +93,7 @@ void initLogging() {
       stackTrace: stack,
     );
     failureNotifier.value = failure;
-    log.error(failure);
+    logger.error(failure);
 
     return true;
   };
