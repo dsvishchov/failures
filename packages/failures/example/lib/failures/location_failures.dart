@@ -12,22 +12,22 @@ enum LocationError {
 
 final class LocationFailureDescriptor implements FailureDescriptor<LocationFailure> {
   @override
-  String? message(LocationFailure failure) {
+  String? title(LocationFailure failure) {
     return switch (failure.error) {
       .placeNotFound
-        => t.common.failures.location.placeNotFound.message,
+        => t.common.failures.location.placeNotFound.title,
       .locationUnavailble
-        => t.common.failures.location.locationUnavailable.message,
+        => t.common.failures.location.locationUnavailable.title,
     };
   }
 
   @override
-  String? details(LocationFailure failure) {
+  String? description(LocationFailure failure) {
     return switch (failure.error) {
       .placeNotFound
-        => t.common.failures.location.placeNotFound.details,
+        => t.common.failures.location.placeNotFound.description,
       .locationUnavailble
-        => t.common.failures.location.locationUnavailable.details,
+        => t.common.failures.location.locationUnavailable.description,
     };
   }
 }

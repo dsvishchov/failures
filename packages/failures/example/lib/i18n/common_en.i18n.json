@@ -1,17 +1,17 @@
 {
   "failures": {
     "generic": {
-      "message": "An unexpected error has occurred",
-      "details": "We have been notified and will do our best to resolve it as soon as possible"
+      "title": "An unexpected error has occurred",
+      "description": "We have been notified and will do our best to resolve it as soon as possible"
     },
     "location": {
       "placeNotFound": {
-        "message": "No place found",
-        "details": "We were unable to find any place given selected location"
+        "title": "No place found",
+        "description": "We were unable to find any place given selected location"
       },
       "locationUnavailable": {
-        "message": "Location unavailable",
-        "details": "We were unable to determine your current location"
+        "title": "Location unavailable",
+        "description": "We were unable to determine your current location"
       }
     }
   }

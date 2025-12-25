@@ -66,7 +66,7 @@ void initLogging() {
         final Failure failure = event.message;
 
         return event.copyWith(
-          message: failure.description,
+          message: failure.message,
           error: failure,
           stackTrace: failure.stackTrace,
           extra: failure.extra,
@@ -273,16 +273,9 @@ class _MyAppState extends State<MyApp> {
         children: [
           _keyValue(
             context,
-            key: 'toString()',
-            value: failure.toString(),
+            key: 'summary',
+            value: failure.summary,
           ),
-          if (failure.description != null) ...[
-            _keyValue(
-              context,
-              key: 'description',
-              value: failure.description!,
-            ),
-          ],
           if (failure.message != null) ...[
             _keyValue(
               context,
@@ -290,11 +283,18 @@ class _MyAppState extends State<MyApp> {
               value: failure.message!,
             ),
           ],
-          if (failure.details != null) ...[
+          if (failure.title != null) ...[
             _keyValue(
               context,
-              key: 'details',
-              value: failure.details!,
+              key: 'title',
+              value: failure.title!,
+            ),
+          ],
+          if (failure.description != null) ...[
+            _keyValue(
+              context,
+              key: 'description',
+              value: failure.description!,
             ),
           ],
         ],

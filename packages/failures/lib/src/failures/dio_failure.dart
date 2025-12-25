@@ -22,10 +22,7 @@ class DioFailure extends Failure<DioException> {
       );
 
   @override
-  FailureType get type => .exception;
-
-  @override
-  String toString() {
+  String get summary {
     final buffer = StringBuffer(
       '${runtimeType} (.${error.type.name}, '
     );
@@ -39,7 +36,10 @@ class DioFailure extends Failure<DioException> {
   }
 
   @override
-  String? get description => null;
+  String? get message => null;
+
+  @override
+  FailureType get type => .exception;
 
   final HttpStatusCode statusCode;
 
@@ -104,12 +104,4 @@ enum DioFailureExtra {
 
   @override
   String toString() => camelToSentence(this.name);
-}
-
-class DioFailureDescriptor extends FailureDescriptor<DioFailure> {
-  @override
-  String? message(DioFailure failure) => failure.error.message;
-
-  @override
-  String? details(DioFailure failure) => null;
 }

@@ -8,11 +8,11 @@ class GenericFailure extends Failure<Object> {
   });
 
   @override
+  String get summary => '${runtimeType} (${error.runtimeType})';
+
+  @override
+  String? get message => error.toString();
+
+  @override
   FailureType get type => .exception;
-
-  @override
-  String toString() => '${runtimeType} (${error.runtimeType})';
-
-  @override
-  String? get description => error.toString();
 }

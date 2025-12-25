@@ -36,10 +36,13 @@ class FailureEnumGenerator {
         });
 
         @override
-        FailureType get type => .${definingAnnotation.type.name};
+        String get summary => '\$runtimeType (.\${error.name})';
 
         @override
-        String toString() => '\$runtimeType (.\${error.name})';
+        String? get message => camelToSentence(error.name);
+
+        @override
+        FailureType get type => .${definingAnnotation.type.name};
 
         $namedConstructors
         $getters
