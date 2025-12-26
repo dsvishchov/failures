@@ -11,8 +11,9 @@ final failures = Failures.instance;
 /// tear-off) and describe them both for technical purposes and
 /// for user facing UI.
 ///
-/// Use [register] method to register new type of errors and their
-/// appropriate failure class and descriptor.
+/// Use [register] method to register new type of failure, its
+/// error type and possibly descriptor. You can always register
+/// descriptor later by using [registerDescriptor] method.
 ///
 /// Use [Failure.fromError] to create a failure matching the type
 /// of the error provided in arguments. If no matching failure has
@@ -20,9 +21,8 @@ final failures = Failures.instance;
 /// in mind that only direct type matching is supported, i.e if you
 /// use a subclass of a failure type registered it won't be matched.
 ///
-/// Typically to handle all unhandled exceptions you might want to
-/// use [FlutterError.onError] and [PlatformDispatcher.instance.onError].
-/// Ref.: https://docs.flutter.dev/testing/errors
+/// Register a global handler by setting [onFailure] callback and
+/// send all failures to handle through calling [handle] method.
 class Failures {
   /// Provides access to the singleton instance
   static final Failures instance = Failures._();
@@ -47,6 +47,7 @@ class Failures {
 
   /// Reset by removing all registered failure types
   void reset() {
+    onFailure = null;
     _meta.clear();
   }
 
