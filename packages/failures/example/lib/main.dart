@@ -100,11 +100,11 @@ void initFailures() {
     descriptor: LocationFailureDescriptor(),
   );
 
-  void onFailure(failure) {
-    failureNotifier.value = failure;
-    logger.error(failure);
+  void onFailure(Failure failure) {
+    if (failure.isException) {
+      logger.error(failure);
+    }
   }
-
   failures.onFailure = onFailure;
 
   // Here we catch both types of errors: Flutter errors and Platform errors.

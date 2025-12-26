@@ -8,7 +8,7 @@ import '/src/failures/failure.dart';
 class FailureError {
   const FailureError({
     this.name,
-    this.type = FailureType.exception,
+    this.type = .exception,
   });
 
   final String? name;

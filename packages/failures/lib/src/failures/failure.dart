@@ -45,6 +45,12 @@ abstract class Failure<E> {
     );
   }
 
+  /// Convenient checker for exception failure type
+  bool get isException => type == .exception;
+
+  /// Convenient checker for logical failure type
+  bool get isLogical => type == .logical;
+
   @override
   String toString() => summary;
 }
@@ -55,7 +61,7 @@ typedef FailureExtra = Map<Object, dynamic>;
 /// Failure types
 enum FailureType {
   exception,
-  logic,
+  logical,
 }
 
 /// Failure descriptor allows providing user facing details
