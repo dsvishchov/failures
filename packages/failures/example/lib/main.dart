@@ -104,6 +104,7 @@ void initFailures() {
     if (failure.isException) {
       logger.error(failure);
     }
+    failureNotifier.value = failure;
   }
   failures.onFailure = onFailure;
 

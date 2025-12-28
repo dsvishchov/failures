@@ -28,10 +28,10 @@ class DioFailure extends Failure<DioException> {
     );
 
     if (error.type == .badResponse) {
-      buffer.write('${statusCode.code}');
+      buffer.write('${statusCode.code}, ');
     }
 
-    buffer.write(', ${error.requestOptions.uri.path})');
+    buffer.write('${error.requestOptions.uri.path})');
     return buffer.toString();
   }
 
