@@ -8,7 +8,7 @@ abstract class Failure<E> {
     this.error, {
     this.extra,
     StackTrace? stackTrace,
-  }) : this.stackTrace = stackTrace != null
+  }) : stackTrace = stackTrace != null
     ? Trace.from(stackTrace)
     : Trace.current();
 

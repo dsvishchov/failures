@@ -14,7 +14,7 @@ class FailureEnumGenerator {
     String namedConstructors = '';
     String getters = '';
 
-    enumValuesNames.forEach((name) {
+    for (final name in enumValuesNames) {
       final capitalizedName = '${name[0].toUpperCase()}${name.substring(1)}';
 
       namedConstructors += '''
@@ -25,7 +25,7 @@ class FailureEnumGenerator {
       getters += '''
         bool get is$capitalizedName => error == .$name;
       ''';
-    });
+    }
 
     return '''
       class $className extends Failure<$enumName> {

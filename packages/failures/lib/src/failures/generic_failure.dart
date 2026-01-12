@@ -8,7 +8,7 @@ class GenericFailure extends Failure<Object> {
   });
 
   @override
-  String get summary => '${runtimeType} (${error.runtimeType})';
+  String get summary => '$runtimeType (${error.runtimeType})';
 
   @override
   String? get message => error.toString();

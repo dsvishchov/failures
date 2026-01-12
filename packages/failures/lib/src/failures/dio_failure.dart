@@ -8,12 +8,11 @@ import 'failure.dart';
 
 class DioFailure extends Failure<DioException> {
   DioFailure(
-    DioException error, {
+    super.error, {
     FailureExtra? extra,
     StackTrace? stackTrace,
   }) : statusCode = HttpStatusCode.fromInt(error.response?.statusCode),
       super(
-        error,
         extra: {
           if (extra != null) ...extra,
           ..._httpDetails(error.requestOptions, error.response),
@@ -24,7 +23,7 @@ class DioFailure extends Failure<DioException> {
   @override
   String get summary {
     final buffer = StringBuffer(
-      '${runtimeType} (.${error.type.name}, '
+      '$runtimeType (.${error.type.name}, '
     );
 
     if (error.type == .badResponse) {
@@ -60,7 +59,7 @@ class DioFailure extends Failure<DioException> {
     RequestOptions request,
     Response? response,
   ) {
-    String? _dataToString(Object? data) {
+    String? dataToString(Object? data) {
       if (data == null) return null;
 
       const maxDataLength = 512;
@@ -80,12 +79,12 @@ class DioFailure extends Failure<DioException> {
       if (request.headers.isNotEmpty) ...{
         .requestHeaders: request.headers,
       },
-      .requestData: ?_dataToString(request.data),
+      .requestData: ?dataToString(request.data),
       .statusCode: ?response?.statusCode,
       if ((response?.headers.map != null) && response!.headers.map.isNotEmpty) ...{
         .responseHeaders: response.headers.map,
       },
-      .responseData: ?_dataToString(response?.data),
+      .responseData: ?dataToString(response?.data),
       .curl: request.curl,
     };
   }
@@ -103,5 +102,5 @@ enum DioFailureExtra {
   curl;
 
   @override
-  String toString() => camelToSentence(this.name);
+  String toString() => camelToSentence(name);
 }
