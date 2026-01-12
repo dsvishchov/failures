@@ -103,6 +103,8 @@ void initFailures() {
   void onFailure(Failure failure) {
     if (failure.isException) {
       logger.error(failure);
+    } else {
+      logger.warning(failure);
     }
     failureNotifier.value = failure;
   }
