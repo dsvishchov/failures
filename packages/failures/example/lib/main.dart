@@ -110,7 +110,7 @@ void initFailures() {
   }
   failures.onFailure = onFailure;
 
-  // Here we catch both Flutter errors
+  // Here we catch Flutter errors
   // (ref: https://docs.flutter.dev/testing/errors)
   FlutterError.onError = (details) {
     Failure.fromError(
@@ -119,7 +119,7 @@ void initFailures() {
     );
   };
 
-  // Here we catch both Platform errors
+  // Here we catch Platform errors
   // (ref: https://docs.flutter.dev/testing/errors)
   PlatformDispatcher.instance.onError = (error, stack) {
     Failure.fromError(
