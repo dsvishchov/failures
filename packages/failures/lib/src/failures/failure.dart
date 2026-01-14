@@ -10,11 +10,7 @@ abstract class Failure<E> {
     StackTrace? stackTrace,
   }) : stackTrace = stackTrace != null
     ? Trace.from(stackTrace)
-    : Trace.current() {
-      if (handleOnCreation) {
-        failures.handle(this);
-      }
-    }
+    : Trace.current();
 
   /// Actual error caused this failure
   final E error;
@@ -34,9 +30,6 @@ abstract class Failure<E> {
   /// Failure type allows to distinguish between exceptions
   /// or just failures within business logic layer
   FailureType get type => .exception;
-
-  /// Whether failure should be handled on creation
-  bool get handleOnCreation => true;
 
   /// Allows to create an instance of Failure based on the failure
   /// types registered using [Failures], see [Failures.fromError]

@@ -115,10 +115,8 @@ There are two different scenarios to deal with:
 unhandled error which __halts execution__ and will end up in an appropriate global
 exception handler
 - error is thrown but caught by the catch clause or it's not thrown at all, and just
-created as a part of normal program execution flow
-
-In either scneario when failure is created it's automatically reported to `onFailure`
-global handler, unless `handleOnCreation` is overwritten in a subclass.
+created as a part of normal program execution flow, and in this case it needs to be
+handled explicitly
 
 First step you need to register a global failures handler, for example:
 
@@ -137,24 +135,26 @@ and [PlatformDispatcher.instance.onError] like this:
 
 ```dart
 FlutterError.onError = (details) {
-  Failure.fromError(
-    details.exception,
-    stackTrace: details.stack,
+  onFailure(
+    Failure.fromError(
+      details.exception,
+      stackTrace: details.stack,
+    ),
   );
 };
 
 PlatformDispatcher.instance.onError = (error, stack) {
-  Failure.fromError(
-    error,
-    stackTrace: stack,
+  onFailure(
+    Failure.fromError(
+      error,
+      stackTrace: stack,
+    ),
   );
   return true;
 };
 ```
 
-To deal with the second scenario you just create a failure and it will be automatically
-reported to the global `onFailure` handle. However if you changed the default behavior
-by overriding `handleOnCreation` then you need to call `handle` explicitly:
+To deal with the second scenario you need to explicitly call the `handle` method:
 
 ```dart
 final failure = ...
