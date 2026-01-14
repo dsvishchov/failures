@@ -25,7 +25,7 @@ void main() async {
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://47fd742d23ef449e8b5dc0064c272d00@o72377.ingest.sentry.io/4504173096730624';
+      options.dsn = const String.fromEnvironment('SENTRY_DSN');
       options.debug = false;
       options.enableAppHangTracking = !kDebugMode;
 
@@ -79,7 +79,7 @@ void initLogging() {
         level: LogLevel.trace,
       ),
       SentryLogger(
-        level: LogLevel.error,
+        level: LogLevel.debug,
       ),
     ]
   );
@@ -110,23 +110,21 @@ void initFailures() {
   }
   failures.onFailure = onFailure;
 
-  // Here we catch both types of errors: Flutter errors and Platform errors.
+  // Here we catch both Flutter errors
   // (ref: https://docs.flutter.dev/testing/errors)
   FlutterError.onError = (details) {
-    onFailure(
-      Failure.fromError(
-        details.exception,
-        stackTrace: details.stack,
-      ),
+    Failure.fromError(
+      details.exception,
+      stackTrace: details.stack,
     );
   };
 
+  // Here we catch both Platform errors
+  // (ref: https://docs.flutter.dev/testing/errors)
   PlatformDispatcher.instance.onError = (error, stack) {
-    onFailure(
-      Failure.fromError(
-        error,
-        stackTrace: stack,
-      ),
+    Failure.fromError(
+      error,
+      stackTrace: stack,
     );
 
     return true;
@@ -223,9 +221,9 @@ class _MyAppState extends State<MyApp> {
                     _button(
                       context,
                       onPressed: () {
-                        throw LocationFailure.placeNotFound();
+                        throw LocationError.placeNotFound;
                       },
-                      title: 'LocationFailure',
+                      title: 'LocationError',
                     ),
                   ],
                 )
