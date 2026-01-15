@@ -234,7 +234,7 @@ class _MyAppState extends State<MyApp> {
                         throw LocationFailure.placeNotFound(
                           message: 'Place with specified ID was not found',
                           extra: {
-                            'Place ID': '123',
+                            'placeId': '123',
                           },
                         );
                       },

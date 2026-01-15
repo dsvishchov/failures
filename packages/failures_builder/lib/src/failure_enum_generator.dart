@@ -20,11 +20,13 @@ class FailureEnumGenerator {
       namedConstructors += '''
         $className.$name({
           String? message,
-          FailureExtra? extra
+          FailureExtra? extra,
+          StackTrace? stackTrace,
         }) : this(
           .$name,
           message: message,
           extra: extra,
+          stackTrace: stackTrace,
         );
       ''';
 
@@ -37,10 +39,10 @@ class FailureEnumGenerator {
       class $className extends Failure<$enumName> {
         $className(
           super.error, {
-          String? message,
+          super.message,
           super.extra,
           super.stackTrace,
-        }) : super(message: message ?? camelToSentence(error.name));
+        });
 
         @override
         String get summary => '\$runtimeType (.\${error.name})';

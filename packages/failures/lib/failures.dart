@@ -7,4 +7,3 @@ export 'src/failures/failure.dart';
 export 'src/failures/generic_failure.dart';
 export 'src/utils/dio/http_status_code.dart';
 export 'src/utils/dio/request_options_curl.dart';
-export 'src/utils/name_transform_utils.dart';
