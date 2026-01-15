@@ -31,7 +31,11 @@ class DioFailure extends Failure<DioException> {
       buffer.write('${statusCode.code}, ');
     }
 
-    buffer.write('${error.requestOptions.uri.path})');
+    final path = error.requestOptions.baseUrl.isNotEmpty
+      ? error.requestOptions.path
+      : error.requestOptions.uri;
+    buffer.write('$path)');
+
     return buffer.toString();
   }
 

@@ -77,6 +77,12 @@ void initLogging() {
     loggers: [
       ConsoleLogger(
         level: LogLevel.trace,
+        excludePaths: [
+          'multi_logger',
+          'dio',
+          'sentry',
+          'flutter',
+        ],
       ),
       SentryLogger(
         level: LogLevel.debug,
