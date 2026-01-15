@@ -6,6 +6,7 @@ import '/src/failures.dart';
 abstract class Failure<E> {
   Failure(
     this.error, {
+    this.message,
     this.extra,
     StackTrace? stackTrace,
   }) : stackTrace = stackTrace != null
@@ -15,17 +16,17 @@ abstract class Failure<E> {
   /// Actual error caused this failure
   final E error;
 
+  /// Detailed technical message
+  final String? message;
+
   /// Extra information associated with the failure
   final FailureExtra? extra;
 
   /// Stack trace to track down the source of the failure
-  final Trace stackTrace;
+  Trace stackTrace;
 
   /// Short description of the failure
   String get summary => error.toString();
-
-  /// Detailed technical message
-  String? get message => null;
 
   /// Failure type allows to distinguish between exceptions
   /// or just failures within business logic layer
@@ -35,11 +36,13 @@ abstract class Failure<E> {
   /// types registered using [Failures], see [Failures.fromError]
   static Failure fromError(
     Object error, {
+    String? message,
     FailureExtra? extra,
     StackTrace? stackTrace,
   }) {
     return failures.fromError(
       error,
+      message: message,
       extra: extra,
       stackTrace: stackTrace,
     );

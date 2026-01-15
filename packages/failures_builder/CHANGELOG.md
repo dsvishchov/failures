@@ -1,3 +1,8 @@
+## 0.0.4
+
+- Allow passing custom messages to failures
+- Allow passing message and extra to enum generated failures
+
 ## 0.0.3
 
 - Revert handling failures on creation, allow only explicit way

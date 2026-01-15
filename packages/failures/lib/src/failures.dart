@@ -1,3 +1,5 @@
+import 'package:stack_trace/stack_trace.dart';
+
 import '/src/failures/failure.dart';
 import '/src/failures/generic_failure.dart';
 
@@ -59,6 +61,7 @@ class Failures {
   /// Create a failure from the given error and its type
   Failure fromError(
     Object error, {
+    String? message,
     FailureExtra? extra,
     StackTrace? stackTrace,
   }) {
@@ -66,11 +69,10 @@ class Failures {
     // a stack trace provided instead of using the current one
     if (error is Failure) {
       final failure = error;
-      if (stackTrace == null) {
-        return failure;
-      } else {
-        error = failure.error;
+      if (stackTrace != null) {
+        failure.stackTrace = Trace.from(stackTrace);
       }
+      return failure;
     }
 
     final meta = _meta.values.firstWhere(
@@ -84,6 +86,7 @@ class Failures {
 
     return create(
       error,
+      message: message,
       extra: extra,
       stackTrace: stackTrace,
     );
@@ -105,6 +108,7 @@ class Failures {
 /// Failure creation function
 typedef CreateFailure<E> = Failure<E> Function(
   E error, {
+  String? message,
   FailureExtra? extra,
   StackTrace? stackTrace,
 });

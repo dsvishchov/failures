@@ -225,9 +225,14 @@ class _MyAppState extends State<MyApp> {
                     _button(
                       context,
                       onPressed: () {
-                        throw LocationError.placeNotFound;
+                        throw LocationFailure.placeNotFound(
+                          message: 'Place with specified ID was not found',
+                          extra: {
+                            'Place ID': '123',
+                          },
+                        );
                       },
-                      title: 'LocationError',
+                      title: 'LocationFailure',
                     ),
                   ],
                 )

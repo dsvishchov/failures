@@ -9,6 +9,7 @@ import 'failure.dart';
 class DioFailure extends Failure<DioException> {
   DioFailure(
     super.error, {
+    super.message,
     FailureExtra? extra,
     StackTrace? stackTrace,
   }) : statusCode = HttpStatusCode.fromInt(error.response?.statusCode),
@@ -33,9 +34,6 @@ class DioFailure extends Failure<DioException> {
     buffer.write('${error.requestOptions.uri.path})');
     return buffer.toString();
   }
-
-  @override
-  String? get message => null;
 
   @override
   FailureType get type => .exception;

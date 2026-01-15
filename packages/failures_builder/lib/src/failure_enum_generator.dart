@@ -18,8 +18,14 @@ class FailureEnumGenerator {
       final capitalizedName = '${name[0].toUpperCase()}${name.substring(1)}';
 
       namedConstructors += '''
-        $className.$name()
-          : this(.$name);
+        $className.$name({
+          String? message,
+          FailureExtra? extra
+        }) : this(
+          .$name,
+          message: message,
+          extra: extra,
+        );
       ''';
 
       getters += '''
@@ -31,15 +37,13 @@ class FailureEnumGenerator {
       class $className extends Failure<$enumName> {
         $className(
           super.error, {
+          String? message,
           super.extra,
           super.stackTrace,
-        });
+        }) : super(message: message ?? camelToSentence(error.name));
 
         @override
         String get summary => '\$runtimeType (.\${error.name})';
-
-        @override
-        String? get message => camelToSentence(error.name);
 
         @override
         FailureType get type => .${definingAnnotation.type.name};
