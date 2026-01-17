@@ -70,9 +70,9 @@ enum FailureType {
 /// Failure descriptor allows providing user facing details
 /// about the failure which can be used to show some UI and
 /// explain what happened.
-abstract class FailureDescriptor<F extends Failure> {
-  String? title(F failure);
-  String? description(F failure);
+class FailureDescriptor<F extends Failure> {
+  String? title(F failure) => null;
+  String? description(F failure) => null;
 }
 
 /// Provides a way to get [title] and [description]

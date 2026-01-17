@@ -19,15 +19,11 @@ class FailureEnumGenerator {
 
       namedConstructors += '''
         $className.$name({
-          String? message,
-          FailureExtra? extra,
-          StackTrace? stackTrace,
-        }) : this(
-          .$name,
-          message: message,
-          extra: extra,
-          stackTrace: stackTrace,
-        );
+          super.message,
+          super.extra,
+          super.stackTrace,
+        }) : super(.$name);
+
       ''';
 
       getters += '''

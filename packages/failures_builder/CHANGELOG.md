@@ -1,3 +1,8 @@
+## 0.0.7
+
+- Make title and description getters optional in descriptor
+- Adjust generator to use named constructors instead of redirecting
+
 ## 0.0.6
 
 - Add stack trace to enum generated failures

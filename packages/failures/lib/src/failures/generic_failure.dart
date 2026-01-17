@@ -13,7 +13,4 @@ class GenericFailure extends Failure<Object> {
 
   @override
   String? get message => error.toString();
-
-  @override
-  FailureType get type => .exception;
 }
