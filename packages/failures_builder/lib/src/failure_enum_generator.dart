@@ -21,6 +21,7 @@ class FailureEnumGenerator {
         $className.$name({
           super.message,
           super.extra,
+          super.underlyingError,
           super.stackTrace,
         }) : super(.$name);
 
@@ -37,6 +38,7 @@ class FailureEnumGenerator {
           super.error, {
           super.message,
           super.extra,
+          super.underlyingError,
           super.stackTrace,
         });
 

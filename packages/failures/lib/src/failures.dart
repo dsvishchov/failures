@@ -19,9 +19,7 @@ final failures = Failures.instance;
 ///
 /// Use [Failure.fromError] to create a failure matching the type
 /// of the error provided in arguments. If no matching failure has
-/// been registered then a [GenericFailure] will be returned. Keep
-/// in mind that only direct type matching is supported, i.e if you
-/// use a subclass of a failure type registered it won't be matched.
+/// been registered then a [GenericFailure] will be returned.
 ///
 /// Register a global handler by setting [onFailure] callback and
 /// send all failures to handle through calling [handle] method.
@@ -35,27 +33,27 @@ class Failures {
     required CreateFailure<E> create,
     FailureDescriptor<F>? descriptor,
   }) {
-    assert(_meta[F] == null, 'This failure is already registered');
-    _meta[F] = _FailureMeta<F, E>(create, descriptor);
+    assert((_registry[F] == null) && (F != GenericFailure), 'This failure is already registered');
+    _registry[F] = _FailureMeta<F, E>(create, descriptor);
   }
 
   /// Register new descriptor for specific failure type
   void registerDescriptor<F extends Failure>(
     FailureDescriptor<F> descriptor,
   ) {
-    assert(_meta[F] != null, 'Provided failure type is not registered yet');
-    _meta[F].descriptor = descriptor;
+    assert(_registry[F] != null, 'Provided failure type is not registered yet');
+    _registry[F].descriptor = descriptor;
   }
 
   /// Reset by removing all registered failure types
   void reset() {
     onFailure = null;
-    _meta.clear();
+    _registry.clear();
   }
 
   /// Get descriptor for specific failure
   FailureDescriptor? descriptorFor(Failure failure) {
-    return _meta[failure.runtimeType].descriptor;
+    return _registry[failure.runtimeType]?.descriptor;
   }
 
   /// Create a failure from the given error and its type
@@ -63,6 +61,7 @@ class Failures {
     Object error, {
     String? message,
     FailureExtra? extra,
+    Object? underlyingError,
     StackTrace? stackTrace,
   }) {
     // If an instance of Failure is thrown let's re-create it with
@@ -75,10 +74,9 @@ class Failures {
       return failure;
     }
 
-    final meta = _meta.values.firstWhere(
-      (value) => value.errorType == error.runtimeType,
-      orElse: () => _meta[Object],
-    );
+    final meta = _registry.values.where(
+      (meta) => meta.canHandleError(error),
+    ).firstOrNull;
 
     final create = meta != null
       ? meta.create
@@ -88,6 +86,7 @@ class Failures {
       error,
       message: message,
       extra: extra,
+      underlyingError: underlyingError,
       stackTrace: stackTrace,
     );
   }
@@ -102,7 +101,7 @@ class Failures {
 
   Failures._();
 
-  final Map<Type, dynamic> _meta = {};
+  final Map<Type, dynamic> _registry = {};
 }
 
 /// Failure creation function
@@ -110,6 +109,7 @@ typedef CreateFailure<E> = Failure<E> Function(
   E error, {
   String? message,
   FailureExtra? extra,
+  Object? underlyingError,
   StackTrace? stackTrace,
 });
 
@@ -121,6 +121,8 @@ class _FailureMeta<F extends Failure<E>, E> {
 
   final CreateFailure<E> create;
   FailureDescriptor<F>? descriptor;
+
+  bool canHandleError(dynamic error) => error is E;
 
   Type get failureType => F;
   Type get errorType => E;

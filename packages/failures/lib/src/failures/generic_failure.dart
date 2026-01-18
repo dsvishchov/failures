@@ -5,6 +5,7 @@ class GenericFailure extends Failure<Object> {
     super.error, {
     super.message,
     super.extra,
+    super.underlyingError,
     super.stackTrace,
   });
 

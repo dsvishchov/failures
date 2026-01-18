@@ -1,14 +1,14 @@
 name: failures_example
 description: An example of using failures package
 publish_to: none
-version: 0.0.7
+version: 0.0.8
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
 
 dependencies:
   dio: ^5.7.0
-  failures: ^0.0.7
+  failures: ^0.0.8
   flutter:
     sdk: flutter
   multi_logger: ^0.0.1
@@ -17,7 +17,7 @@ dependencies:
   slang_flutter: ^4.7.0
 
 dev_dependencies:
-  failures_builder: ^0.0.7
+  failures_builder: ^0.0.8
   build_runner: any
   flutter_test:
     sdk: flutter

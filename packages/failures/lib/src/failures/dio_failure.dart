@@ -10,6 +10,7 @@ class DioFailure extends Failure<DioException> {
     super.error, {
     super.message,
     FailureExtra? extra,
+    super.underlyingError,
     StackTrace? stackTrace,
   }) : statusCode = HttpStatusCode.fromInt(error.response?.statusCode),
       super(

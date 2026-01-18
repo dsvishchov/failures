@@ -1,3 +1,8 @@
+## 0.0.8
+
+- More robust type checking when creating failure from error
+- Add support for passing underlying error when creating a failure
+
 ## 0.0.7
 
 - Make title and description getters optional in descriptor

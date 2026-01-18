@@ -93,10 +93,6 @@ void initLogging() {
 
 void initFailures() {
   // Register all types of failures and their descriptors
-  failures.register<GenericFailure, Object>(
-    create: GenericFailure.new,
-  );
-
   failures.register<DioFailure, DioException>(
     create: DioFailure.new,
   );

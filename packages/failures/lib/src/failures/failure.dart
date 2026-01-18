@@ -8,6 +8,7 @@ abstract class Failure<E> {
     this.error, {
     this.message,
     this.extra,
+    this.underlyingError,
     StackTrace? stackTrace,
   }) : stackTrace = stackTrace != null
     ? Trace.from(stackTrace)
@@ -21,6 +22,9 @@ abstract class Failure<E> {
 
   /// Extra information associated with the failure
   final FailureExtra? extra;
+
+  /// Underlying error caused actual error
+  final Object? underlyingError;
 
   /// Stack trace to track down the source of the failure
   Trace stackTrace;
@@ -38,12 +42,14 @@ abstract class Failure<E> {
     Object error, {
     String? message,
     FailureExtra? extra,
+    Object? underlyingError,
     StackTrace? stackTrace,
   }) {
     return failures.fromError(
       error,
       message: message,
       extra: extra,
+      underlyingError: underlyingError,
       stackTrace: stackTrace,
     );
   }
@@ -78,9 +84,9 @@ class FailureDescriptor<F extends Failure> {
 /// Provides a way to get [title] and [description]
 /// about any specific failure directly through its instance.
 extension FailureDescription on Failure {
-  String? get title
-    => failures.descriptorFor(this)?.title(this);
+  String? get title =>
+    failures.descriptorFor(this)?.title(this);
 
-  String? get description
-    => failures.descriptorFor(this)?.description(this);
+  String? get description =>
+    failures.descriptorFor(this)?.description(this);
 }

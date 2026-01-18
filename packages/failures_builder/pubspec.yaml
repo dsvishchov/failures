@@ -1,6 +1,6 @@
 name: failures_builder
 description: A code generator companion for failures
-version: 0.0.7
+version: 0.0.8
 repository: https://github.com/dsvishchov/failures
 issue_tracker: https://github.com/dsvishchov/failures/issues
 
@@ -10,6 +10,6 @@ environment:
 dependencies:
   analyzer: ">=8.0.0 <9.0.0"
   build: ">=3.0.0 <5.0.0"
-  failures: ^0.0.7
+  failures: ^0.0.8
   meta: ^1.9.0
   source_gen: ">=3.0.0 <5.0.0"
