@@ -91,9 +91,17 @@ class Failures {
     );
   }
 
-  /// Handle a failure by calling a callback when provided
-  void handle(Failure failure) {
-    failures.onFailure?.call(failure);
+  /// Handle an error or failure
+  void handle(
+    Object error,
+    [StackTrace? stackTrace,]
+  ) {
+    failures.onFailure?.call(
+      Failure.fromError(
+        error,
+        stackTrace: stackTrace,
+      )
+    );
   }
 
   /// Callback to be triggered to handled

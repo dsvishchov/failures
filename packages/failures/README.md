@@ -121,13 +121,13 @@ handled explicitly
 First step you need to register a global failures handler, for example:
 
 ```dart
-void onFailure(Failure failure) {
+failures.onFailure = (failure) {
   if (failure.isException) {
     logger.error(failure);
+  } else {
+    logger.warning(failure);
   }
 }
-
-failures.onFailure = onFailure;
 ```
 
 To deal with the first scenario it's recommended to override [FlutterError.onError]
@@ -135,21 +135,14 @@ and [PlatformDispatcher.instance.onError] like this:
 
 ```dart
 FlutterError.onError = (details) {
-  onFailure(
-    Failure.fromError(
-      details.exception,
-      stackTrace: details.stack,
-    ),
+  failures.handle(
+    details.exception,
+    details.stack,
   );
 };
 
-PlatformDispatcher.instance.onError = (error, stack) {
-  onFailure(
-    Failure.fromError(
-      error,
-      stackTrace: stack,
-    ),
-  );
+PlatformDispatcher.instance.onError = (error, stackTrace) {
+  failures.handle(error, stackTrace);
   return true;
 };
 ```
@@ -159,6 +152,16 @@ To deal with the second scenario you need to explicitly call the `handle` method
 ```dart
 final failure = ...
 failures.handle(failure);
+```
+
+Also a typical scenario is to catch and handle all errors in local try/catch block:
+
+```dart
+try {
+  ...
+} catch (error, stackTrace) {
+  failures.handle(error, stackTrace);
+}
 ```
 
 Now all errors will end up in a single place where you can log them, show in a nicely

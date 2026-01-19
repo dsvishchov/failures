@@ -92,7 +92,6 @@ void initLogging() {
 }
 
 void initFailures() {
-  // Register all types of failures and their descriptors
   failures.register<DioFailure, DioException>(
     create: DioFailure.new,
   );
@@ -102,37 +101,28 @@ void initFailures() {
     descriptor: LocationFailureDescriptor(),
   );
 
-  void onFailure(Failure failure) {
+  failures.onFailure = (failure) {
     if (failure.isException) {
       logger.error(failure);
     } else {
       logger.warning(failure);
     }
     failureNotifier.value = failure;
-  }
-  failures.onFailure = onFailure;
+  };
 
   // Here we catch Flutter errors
   // (ref: https://docs.flutter.dev/testing/errors)
   FlutterError.onError = (details) {
-    onFailure(
-      Failure.fromError(
-        details.exception,
-        stackTrace: details.stack,
-      ),
+    failures.handle(
+      details.exception,
+      details.stack,
     );
   };
 
   // Here we catch Platform errors
   // (ref: https://docs.flutter.dev/testing/errors)
-  PlatformDispatcher.instance.onError = (error, stack) {
-    onFailure(
-      Failure.fromError(
-        error,
-        stackTrace: stack,
-      ),
-    );
-
+  PlatformDispatcher.instance.onError = (error, stackTrace) {
+    failures.handle(error, stackTrace);
     return true;
   };
 }

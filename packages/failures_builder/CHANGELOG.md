@@ -1,3 +1,7 @@
+## 0.0.9
+
+- Allow failures.handle to handle both failures and errors
+
 ## 0.0.8
 
 - More robust type checking when creating failure from error
