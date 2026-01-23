@@ -1,3 +1,8 @@
+## 0.0.11
+
+- Remove runtime types from default summaries
+- Fix issue with stack trace not being preseved when failure is handled
+
 ## 0.0.10
 
 - Rename @FailureError annotation to @AsFailure

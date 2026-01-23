@@ -63,20 +63,23 @@ void initLogging() {
       // the failure itself an error of [LogEvent] and use the
       // failure description as a message instead
       if (event.message is Failure) {
-        final Failure failure = event.message;
+        final failure = event.message as Failure;
 
         return event.copyWith(
           message: failure.message,
           error: failure,
           stackTrace: failure.stackTrace,
-          extra: failure.extra,
+          extra: {
+            ...?failure.extra,
+            'underlyingError': ?failure.underlyingError,
+          },
         );
       }
       return event;
     },
     loggers: [
       ConsoleLogger(
-        level: LogLevel.trace,
+        level: .trace,
         excludePaths: [
           'multi_logger',
           'dio',
@@ -85,7 +88,7 @@ void initLogging() {
         ],
       ),
       SentryLogger(
-        level: LogLevel.debug,
+        level: .debug,
       ),
     ]
   );
@@ -217,12 +220,18 @@ class _MyAppState extends State<MyApp> {
                     _button(
                       context,
                       onPressed: () {
-                        throw LocationFailure.placeNotFound(
-                          message: 'Place with specified ID was not found',
-                          extra: {
-                            'placeId': '123',
-                          },
-                        );
+                        try {
+                          [1, 2][3];
+                        } catch (error, stackTrace) {
+                          throw LocationFailure.placeNotFound(
+                            message: 'Place with specified ID was not found',
+                            underlyingError: error,
+                            stackTrace: stackTrace,
+                            extra: {
+                              'placeId': '123',
+                            },
+                          );
+                        }
                       },
                       title: 'LocationFailure',
                     ),

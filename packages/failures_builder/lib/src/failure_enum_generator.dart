@@ -43,7 +43,8 @@ class FailureEnumGenerator {
         });
 
         @override
-        String get summary => '\$runtimeType (.\${error.name})';
+        String get summary =>
+          '.\${error.name}\${message != null ? ': \$message' : ''}';
 
         @override
         FailureType get type => .${definingAnnotation.type.name};

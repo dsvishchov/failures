@@ -8,10 +8,4 @@ class GenericFailure extends Failure<Object> {
     super.underlyingError,
     super.stackTrace,
   });
-
-  @override
-  String get summary => '$runtimeType (${error.runtimeType})';
-
-  @override
-  String? get message => error.toString();
 }

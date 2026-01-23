@@ -96,6 +96,10 @@ class Failures {
     Object error,
     [StackTrace? stackTrace,]
   ) {
+    if (error is Failure) {
+      stackTrace = error.stackTrace;
+    }
+
     failures.onFailure?.call(
       Failure.fromError(
         error,

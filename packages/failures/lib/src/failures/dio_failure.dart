@@ -24,17 +24,17 @@ class DioFailure extends Failure<DioException> {
   @override
   String get summary {
     final buffer = StringBuffer(
-      '$runtimeType (.${error.type.name}, '
+      '.${error.type.name}'
     );
 
     if (error.type == .badResponse) {
-      buffer.write('${statusCode.code}, ');
+      buffer.write(' (${statusCode.code})');
     }
 
     final path = error.requestOptions.baseUrl.isNotEmpty
       ? error.requestOptions.path
       : error.requestOptions.uri;
-    buffer.write('$path)');
+    buffer.write(': $path');
 
     return buffer.toString();
   }
