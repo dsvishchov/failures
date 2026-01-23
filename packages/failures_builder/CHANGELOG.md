@@ -1,3 +1,8 @@
+## 0.0.10
+
+- Rename @FailureError annotation to @AsFailure
+- Add info about code generation to README
+
 ## 0.0.9
 
 - Allow failures.handle to handle both failures and errors

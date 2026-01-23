@@ -5,7 +5,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'failure_enum_generator.dart';
 
-class FailuresGenerator extends GeneratorForAnnotation<FailureError> {
+class FailuresGenerator extends GeneratorForAnnotation<AsFailure> {
   @override
   String generateForAnnotatedElement(
     Element element,
@@ -24,16 +24,16 @@ class FailuresGenerator extends GeneratorForAnnotation<FailureError> {
     return generator.generate();
   }
 
-  FailureError _getAnnotation(Element element) {
+  AsFailure _getAnnotation(Element element) {
     final annotation = const TypeChecker
-      .typeNamed(FailureError)
+      .typeNamed(AsFailure)
       .firstAnnotationOf(element);
 
     final reader = ConstantReader(annotation);
     final name = reader.peek('name');
     final type = reader.peek('type');
 
-    return FailureError(
+    return AsFailure(
       name: name?.stringValue,
       type: FailureType.values.firstWhere(
         (value) => type?.objectValue.getField('_name')?.toStringValue() == value.toString().split('.')[1],

@@ -167,6 +167,29 @@ try {
 Now all errors will end up in a single place where you can log them, show in a nicely
 widget to the user etc. Enjoy!
 
+## Code generation
+
+There is a handy way to convert any enum to be an error of a Failure subclass by annotating
+corresponding enum with `AsFailure()` annotation and running code generation:
+
+```dart
+@AsFailure(type: .logical)
+enum LocationError {
+  placeNotFound,
+  locationUnavailble,
+}
+```
+
+The above code will generate a class `LocationFailure` with error type `LocationError` with
+convenient named constructors and getters provided, so you can use it as:
+
+```dart
+final failure = LocationFailure.placeNotFound();
+```
+```dart
+if (failure.isPlaceNotFound) { ... }
+```
+
 [failures]: https://pub.dartlang.org/packages/failures
 [failures_builder]: https://pub.dartlang.org/packages/failures_builder
 [build_runner]: https://pub.dev/packages/build_runner

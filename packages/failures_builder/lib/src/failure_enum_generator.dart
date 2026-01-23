@@ -8,7 +8,7 @@ class FailureEnumGenerator {
   });
 
   final EnumElement definingEnum;
-  final FailureError definingAnnotation;
+  final AsFailure definingAnnotation;
 
   String generate() {
     String namedConstructors = '';
